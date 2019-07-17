@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	  	<title>User Form Demo</title>
+	  	<meta charset="utf-8">
+	  	<meta firstName="viewport" content="width=device-width, initial-scale=1">
+	  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+	  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	  	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+	  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<div class="jumbotron jumbotron-fluid">
+		  	<div class="container">
+		    	<h1>User form demo</h1>
+		    	<p>Image upload demo along with POST data form</p>
+		  	</div>
+		</div>
+		<div class="container">
+		<h1><span class="badge badge-secondary">Ajouter un utilisateur</span></h1>
+		<div class="alert alert-success">File uploaded successfully</div>
+		<div class="alert alert-danger">File is not uploaded. Error occurred</div>
+		    <div class="form-group">
+		      <label for="firstName">Nom:</label>
+		      <input type="text" class="form-control" id="firstName" name="firstName" required>
+		    </div>
+			<div class="form-group">
+				<label for="firstName">Prénom:</label>
+				<input type="text" class="form-control" id="lastName" name="lastName" required>
+			</div>
+			<div class="form-group">
+				<label for="code">Code:</label>
+				<input type="text" class="form-control" id="code" name="code">
+			</div>
+			<div class="form-group">
+				<label for="email">E-mail:</label>
+				<input type="text" class="form-control" id="email" name="email" required>
+			</div>
+			<form id="fileUploadForm">
+			<div class="form-group">
+				<label for="firstName">Photo:</label>
+				<input type="file" class="form-control-file border" name="file">
+			</div>
+			</form>
+			<div class="form-group">
+				<label for="password">Passe:</label><br>
+				<input type="radio"  name="password" id="password" value="auto"> Générer un nouveau mot de pass automatiquement <br>
+				<input type="radio"  name="password"  value="input"> <input type="text"  id="password_input" name="email" required><br>
+			</div>
+			<div class="form-group">
+				<label for="profile">Profil:</label>
+				<select class="form-control" id="profile" name="profile">
+					<option value="volvo">Apprenant</option>
+					<option value="saab">Apprenant</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="emailToUser">Email à l'utilisateur:  </label><br>
+				<input type="radio"  name="emailToUser" id="emailToUser" value= 1> Oui<br>
+				<input type="radio"  name="emailToUser"  value= 0> Non <br>
+			</div>
+			<div class="form-group">
+				<label for="expiration">Expiration:</label><br>
+				<input type="radio"  name="expiration" id="expiration" value="auto"> N'expire jamais <br>
+				<input type="radio"  name="expiration"  value="input"> <input type="datetime-local"  id="expiration_input" name="expiration" ><br>
+			</div>
+			<button type="button" class="btn btn-primary" id="btnSubmit">Ajouter</button>
+		</div>
+		<br/>
+		<div class="container">
+			<h1><span class="badge badge-secondary">User(s) List</span></h1>
+			 <div class="table-responsive">
+				    <table class="table table-hover table-bordered">
+				      <thead>
+				        <tr>
+						  <th>Id</th>
+						  <th>firstName</th>
+						  <th>code</th>
+						  <th>email</th>
+						  <th>Profile Picture</th>
+						  <th>password</th>
+						  <th>profile</th>
+						  <th>emailToUser</th>
+						  <th>expiration</th>
+				        </tr>
+				      </thead>
+				      <tbody>
+				      </tbody>
+				    </table>
+				</div>
+			</div>
+			<script>
+
+			function randomPassword(length) {
+				var chars = "abcdefghijklmnopqrstuvwxyz!@#$%^&*()-+<>ABCDEFGHIJKLMNOP1234567890";
+				var pass = "";
+				for (var x = 0; x < length; x++) {
+					var i = Math.floor(Math.random() * chars.length);
+					pass += chars.charAt(i);
+				}
+				return pass;
+			}
+			function getUserDetails() {
+				  $.ajax({url: "/users", success: function(result){
+					  $(".table tbody").html('');
+					  if(result.length>0) {
+					  $.each(result, function( index, value ) {
+						  var htmlStr = "<tr><td>"+result[index].id+"</td><td>"+result[index].firstName+"</td><td>"+result[index].lastName+"</td><td>"+result[index].code+"</td><td>"+result[index].email+"</td><td><img src=\""+result[index].profilePicPath+"\"></img></td><td>"+result[index].password+"</td><td>"+result[index].profile+"</td><td>"+result[index].emailToUser+"</td><td>"+result[index].expiration+"</td></tr>";
+						 	$(".table tbody").append(htmlStr);
+						});
+					  } else {
+						  $(".table tbody").append('<tr><td colspan="4" style="color:red;">No records to display</td></tr>');
+					  }
+				    }});
+			}
+				$(document).ready(function () {
+					getUserDetails();
+					$(".alert-success").hide();
+					$(".alert-danger").hide();
+				    $("#btnSubmit").click(function () {
+					    var form = $('#fileUploadForm')[0];
+						var data = new FormData(form);
+						if($("#password").val() == auto){
+							var pass = randomPassword(8);
+						}else{
+							var pass = $("#password_input").val();
+						}
+				        var jsonDataObj = {
+				        	"firstName": $("#firstName").val(),
+				        	"lastName": $("#lastName").val(),
+				        	"code": $("#code").val(),
+				        	"email": $("#email").val(),
+				        	"password": pass,
+				            "profile" : $("#profile").val(),
+				            "emailToUser" : $("#emailToUser").val(),
+				            "expiration" : $("#expiration").val(),
+				        };
+				        data.append("empJson", JSON.stringify(jsonDataObj));
+				        $("#btnSubmit").prop("disabled", true);
+				        $.ajax({
+				            type: "POST",
+				            enctype: 'multipart/form-data',
+				            url: "/employees",
+				            data: data,
+				            processData: false,
+				            contentType: false,
+				            cache: false,
+				            timeout: 600000,
+				            success: function (data) {
+				              
+				                console.log("SUCCESS : ", data);
+				                $("#btnSubmit").prop("disabled", false);
+				                $(".alert-success").show();
+				                $(".alert-danger").hide();
+				                getUserDetails();
+				                
+				            },
+				            error: function (e) {
+				            	 $(".alert-success").hide();
+				                 $(".alert-danger").show();
+				                console.log("ERROR : ", e);
+				                $("#btnSubmit").prop("disabled", false);
+				            }
+				        });
+				    });
+				});
+		</script>
+	</body>
+</html>

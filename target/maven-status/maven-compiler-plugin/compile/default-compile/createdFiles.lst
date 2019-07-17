@@ -1,0 +1,14 @@
+com\xenaye\projects\userservice\service\FileStorageService.class
+com\xenaye\projects\userservice\model\AppResponse.class
+com\xenaye\projects\userservice\utils\AppConstants.class
+com\xenaye\projects\userservice\model\User.class
+com\xenaye\projects\userservice\exception\FileStorageException.class
+com\xenaye\projects\userservice\controller\ViewController.class
+com\xenaye\projects\userservice\exception\MyFileNotFoundException.class
+com\xenaye\projects\userservice\config\FileStorageProperties.class
+com\xenaye\projects\userservice\service\ApplicationServiceImpl.class
+com\xenaye\projects\userservice\service\ApplicationService.class
+com\xenaye\projects\userservice\service\FileStorageServiceImpl.class
+com\xenaye\projects\userservice\repo\UserRepository.class
+com\xenaye\projects\userservice\UserserviceApplication.class
+com\xenaye\projects\userservice\rest\UserRestController.class
